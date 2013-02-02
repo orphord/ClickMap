@@ -1,0 +1,12 @@
+# compiled #
+############
+*.class
+
+# archives/packages #
+#####################
+*.tar
+*.gz
+
+# backups #
+###########
+*.*~
