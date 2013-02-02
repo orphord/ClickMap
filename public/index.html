@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+<head>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<style type="text/css">
+  html { height: 100% }
+  body { height: 100%; margin: 0; padding: 0 }
+  #map_canvas { height: 100% }
+</style>
+<script src="http://code.jquery.com/jquery-1.5.js"></script>
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+
+<script type="text/javascript">
+var map;
+var URL = "http://localhost:1337/click";
+
+var init = function() {
+  var myLatlng = new google.maps.LatLng(40,-105);
+  var myOptions = {
+    zoom: 10,
+    center: myLatlng,
+    mapTypeId: google.maps.MapTypeId.TERRAIN
+  } // end myOptions
+
+  map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+  google.maps.event.addListener(map, 'click', function(event) {
+    $.ajax(
+      {
+        url: URL,
+        data: {
+          "loc": event.latLng.toString(),
+          "app": "hotclicks"
+        },
+        dataType: 'jsonp',
+        jsonpCallback : 'toRun',
+        success: function(dta) {
+          placeMarker(jQuery.parseJSON(dta).loc);
+        },
+        error: function(dataObj, txtErr, err) {
+          alert("Error Type: " + txtErr.toString());
+          alert("Error thrown: " + err.toString());
+        }
+      });
+  }); // End click listener event
+} // End init function
+
+function placeMarker(location) {
+  var ltLng = parseLatLngStr(location);
+  var marker = new google.maps.Marker(
+  {
+    position: ltLng, 
+    map: map
+  }); // end google.maps.Marker
+
+  var infoWin = new google.maps.InfoWindow({ 
+    content: ltLng.toString()
+  }); // end InfoWindow
+
+  infoWin.open(map, marker);
+}
+
+function parseLatLngStr(coords) {
+  var latiLongi = new google.maps.LatLng(coords[0],coords[1]);
+
+  return latiLongi;
+} // end parseLatLngStr
+
+$(document).ready(init);
+
+</script>
+</head>
+
+<body>
+  <div id="map_canvas" style="width:100%; height:95%"></div>
+
+</body>
+
+</html>
