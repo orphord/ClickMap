@@ -1,0 +1,11 @@
+This is the server for the ClickMap project.  The idea is that users will send
+location information indicating something is happening at a given location
+which can be app defined, this server will record each notification with the
+app name, coordinates, and time of click.  See the example below.
+
+One version using the ClickMap might be a phone app where people are clicking if
+they see a person they find attractive.  A user could create an account
+indicating the gender they find attractive and some user name, then clicks would
+transmit location info (from the phone), application name, and user name.  Time
+would be recorded on the server side.  Clicks are stored and might be displayed
+as a heat map to premium users (or some such).
