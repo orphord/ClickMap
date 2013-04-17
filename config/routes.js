@@ -1,22 +1,16 @@
-var url = require('url')
+var url = require('url');
+var dbFunc = require('./db');
+var db = dbFunc();
 
-var dbUrl = "mydb";
-var hot = ["hot"];
-var mongo = require("mongojs");
-var db = mongo(dbUrl, hot);
-
+// Function(s) exposed to outside
 module.exports = function(app) {
-  app.get('/', function(req, res) {
-		res.end('This is a string');
-  });
-
   app.get('/click', function(req, res) {
 		console.log('click route URL: ' + req.url);
 		handler(req, res);
-		res.end('you clicked something');
   });
 }
 
+// Function to handle clicks (used by get '/click' route
 function handler(req, res) {
   console.log('In handler() function');
   var urlStuff = url.parse(req.url, true);
@@ -28,8 +22,12 @@ function handler(req, res) {
 
 	// set timestamp
   var timest = new Date().getTime();
-  db.hot.insert({'loc':location, 'app':inApp, 'time':timest});
 
+	// insert data to mongodb
+  var reslt = db.hot.insert({'loc':location, 'app':inApp, 'time':timest});
+  console.log("RESULT: " + reslt);
+
+	// create response to return to client
   res.writeHead(200, {'Content-Type': 'text/javascript'});
   res.end('toRun(\'{\"loc\": [' 
 					+ location 
@@ -38,6 +36,8 @@ function handler(req, res) {
 
 }
 
+
+// Function to map incoming location to database location
 function mapLocToDBLoc(mapLoc) {
   console.log('In mapLocToDBLoc() function.');
   var locStrings = mapLoc.replace(/\s+/g, "").replace("(","").
