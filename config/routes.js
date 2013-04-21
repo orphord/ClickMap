@@ -1,6 +1,6 @@
 var url = require('url');
-var dbFunc = require('./db');
-var db = dbFunc();
+var dbCreate = require('./db');
+var db = dbCreate();
 
 // Function(s) exposed to outside
 module.exports = function(app) {
