@@ -29,9 +29,6 @@ if(process.env.VCAP_SERVICES){
 
 }
 
-// Using mongojs library for mongo db support
-console.log("DB URL: " + dbUrl + "; HOT: " + hot);
-
 // Function(s) exposed to outside
 module.exports = function() {
 	var db = require("mongojs").connect(dbUrl, hot);
