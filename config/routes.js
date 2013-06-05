@@ -6,12 +6,16 @@ var db = dbCreate();
 module.exports = function(app) {
   app.get('/click', function(req, res) {
 		console.log('click route URL: ' + req.url);
-		handler(req, res);
+		clickHandler(req, res);
+  });
+  app.get('/heat', function(req, res) {
+		console.log('heat request URL: ' + req.url);
+		heatHandler(req, res);
   });
 }
 
 // Function to handle clicks (used by get '/click' route
-function handler(req, res) {
+function clickHandler(req, res) {
   console.log('In handler() function');
   var urlStuff = url.parse(req.url, true);
   var inLoc = urlStuff.query.loc;
@@ -34,6 +38,11 @@ function handler(req, res) {
 					+ '], \"time\":' 
 					+ timest + '}\')');
 
+}
+
+// Function to handle heat requests
+function heatHandler(req, res) {
+	console.log("Heat Handler called...");
 }
 
 
