@@ -43,6 +43,30 @@ function clickHandler(req, res) {
 // Function to handle heat requests
 function heatHandler(req, res) {
 	console.log("Heat Handler called...");
+  //1. Get data from url
+  var urlStuff = url.parse(req.url, true);
+  var neStr = urlStuff.query.NE;
+  var swStr = urlStuff.query.SW;
+  console.log("NE: " + neStr);
+  console.log("SW: " + swStr);
+
+	//2. Create 'locations'
+	var NEloc = mapLocToDBLoc(neStr);
+	var SWloc = mapLocToDBLoc(swStr);
+	var timest = new Date().getTime();
+
+  //3. Enter data into database
+	// TESTCODE -- NOT JUST YET TO DB
+
+  //4. Create and return response to client
+	res.writeHead(200, {'Content-Type': 'text/javascript'});
+	var jsonStr = 'toRun(\'{'
+              + '\"NE\": [' + NEloc + '],'
+              + '\"SW\": [' + SWloc + '], '
+              + '\"time\":' + timest 
+              + '}\')'
+	console.log(jsonStr);
+  res.end(jsonStr);
 }
 
 
