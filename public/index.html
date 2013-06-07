@@ -28,7 +28,7 @@ var init = function() {
 
   map = new google.maps.Map(document.getElementById("map_canvas"),
                             googleMapOptions);
-  google.maps.event.addListener(map, 'click', function(event) {
+  google.maps.event.addListener(map, 'dblclick', function(event) {
     $.ajax(
       {
         url: clickURL,
@@ -49,18 +49,31 @@ var init = function() {
     );
   }); // End click listener event
 
-  google.maps.event.addListener(map, 'dblclick', function(event) {
+  google.maps.event.addListener(map, 'click', function(event) {
+    var NEcorner = new google.maps.LatLng(event.latLng.lat() - 2.0,
+                                          event.latLng.lng() + 2.0);
+    var SWcorner = new google.maps.LatLng(event.latLng.lat() + 2.0,
+                                          event.latLng.lng() - 2.0);
+
     $.ajax(
       {
         url: heatURL,
         data: {
-          "topLeft": event.latLng.toString(),
-          "bottRight": event.latLng.toString(),
+          "NE": NEcorner.toString(),
+          "SW": SWcorner.toString(),
           "app": "hotclicks"
         },
         dataType: 'jsonp',
         jsonpCallback: 'toRun',
-        success: alert("Success"),
+        success: function(dta) {
+                   alert("Success Function");
+                   var neLoc = jQuery.parseJSON(dta).NE;
+                   var swLoc = jQuery.parseJSON(dta).SW;
+                   alert(neLoc.toString());
+                   alert(swLoc.toString());
+                   placeMarker(neLoc);
+                   placeMarker(swLoc);
+                 },
         error: function(dataObj, txtErr, err) {
                  alert("Error Type: " + txtErr.toString());
                  alert("Error thrown: " + err.toString());
@@ -86,6 +99,7 @@ function placeMarker(location) {
 }
 
 function parseLatLngStr(coords) {
+  alert("Coords: " + coords);
   var latiLongi = new google.maps.LatLng(coords[0],coords[1]);
 
   return latiLongi;
