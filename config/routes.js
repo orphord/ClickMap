@@ -1,6 +1,7 @@
 var url = require('url');
 var dbCreate = require('./db');
 var db = dbCreate();
+var gm = require('googlemaps');
 
 // Function(s) exposed to outside
 module.exports = function(app) {
@@ -41,32 +42,49 @@ function clickHandler(req, res) {
 }
 
 // Function to handle heat requests
+var jsonStr = '';
 function heatHandler(req, res) {
 	console.log("Heat Handler called...");
   //1. Get data from url
   var urlStuff = url.parse(req.url, true);
-  var neStr = urlStuff.query.NE;
-  var swStr = urlStuff.query.SW;
-  console.log("NE: " + neStr);
-  console.log("SW: " + swStr);
+  var nwStr = urlStuff.query.NW;
+  var seStr = urlStuff.query.SE;
+  console.log("NW: " + nwStr);
+  console.log("SE: " + seStr);
 
 	//2. Create 'locations'
-	var NEloc = mapLocToDBLoc(neStr);
-	var SWloc = mapLocToDBLoc(swStr);
+	var NWloc = mapLocToDBLoc(nwStr);
+	var SEloc = mapLocToDBLoc(seStr);
+
 	var timest = new Date().getTime();
 
-  //3. Enter data into database
-	// TESTCODE -- NOT JUST YET TO DB
+  //3. Get data from database
+  var query = {"loc": {$geoWithin: {$box: [NWloc, SEloc]}}};
 
-  //4. Create and return response to client
-	res.writeHead(200, {'Content-Type': 'text/javascript'});
-	var jsonStr = 'toRun(\'{'
-              + '\"NE\": [' + NEloc + '],'
-              + '\"SW\": [' + SWloc + '], '
-              + '\"time\":' + timest 
-              + '}\')'
-	console.log(jsonStr);
-  res.end(jsonStr);
+  console.log("Q: " + JSON.stringify(query));
+
+	db.hot.find(query, function(err, docs) {
+		console.log("In DB.find() callback;Points from DB within: ");
+		if(err == null) {
+			jsonStr = 'toRun(\'{\"points\": [';
+			for(var i = 0; i < docs.length; i++) {
+				console.log('doc[' + i + "]: " + docs[i].toString());
+				if(i != 0) { jsonStr = jsonStr + ','; }
+				jsonStr = jsonStr + '[' + docs[i].loc + ']';
+			}
+			jsonStr = jsonStr + ']}\')';
+
+
+			console.log("JSON STR: " + jsonStr);
+			res.writeHead(200, {'Content-Type': 'text/javascript'});
+			res.end(jsonStr);		
+		} else {
+			console.log("ERR: " + err.toString());
+		}
+	});
+
+
+
 }
 
 
