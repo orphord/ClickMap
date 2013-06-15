@@ -9,7 +9,7 @@
   #map_canvas { height: 100% }
 </style>
 <script src="http://code.jquery.com/jquery-1.5.js"></script>
-<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=visualization"></script>
 
 <script type="text/javascript">
 var map;
@@ -50,10 +50,10 @@ var init = function() {
   }); // End click listener event
 
   google.maps.event.addListener(map, 'rightclick', function(event) {
-    var NWcorner = new google.maps.LatLng(event.latLng.lat() + 0.05,
-                                          event.latLng.lng() + 0.05);
-    var SEcorner = new google.maps.LatLng(event.latLng.lat() - 0.05,
-                                          event.latLng.lng() - 0.05);
+    var NWcorner = new google.maps.LatLng(event.latLng.lat() + 0.15,
+                                          event.latLng.lng() + 0.15);
+    var SEcorner = new google.maps.LatLng(event.latLng.lat() - 0.15,
+                                          event.latLng.lng() - 0.15);
 
     $.ajax(
       {
@@ -69,8 +69,7 @@ var init = function() {
                   // Currently receiving NE and SW back, need to get a heatmap
                   // object back
                   points = jQuery.parseJSON(dta).points;
-                  alert("Points[0]: " + points[0]);
-
+                  createHeatMap(points);
                   //var nwLoc = jQuery.parseJSON(dta).NW;
                   // var seLoc = jQuery.parseJSON(dta).SE;
 
@@ -106,6 +105,28 @@ function parseLatLngStr(coords) {
 
   return latiLongi;
 } // end parseLatLngStr
+
+function createHeatMap(_pts) {
+  // 1. create LatLng objects from points returned from server
+  var ltLngs = [];
+  for(var i = 0; i < _pts.length; i++) {
+    ltLngs[i] = new google.maps.LatLng(_pts[i][0], _pts[i][1]);
+  }
+
+  // 2. Create MVCArray from LatLng array
+  var mvcArray = new google.maps.MVCArray(ltLngs);
+
+  // 3. Create HeatMap object
+  var heatmap = new google.maps.visualization.HeatmapLayer({
+    data: mvcArray
+  });
+
+  // 4. set heatmap object's map
+  heatmap.setMap(map);
+
+
+}
+
 
 $(document).ready(init);
 
