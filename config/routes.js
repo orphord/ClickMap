@@ -29,7 +29,7 @@ function clickHandler(req, res) {
   var timest = new Date().getTime();
 
 	// insert data to mongodb
-  var reslt = db.hot.insert({'loc':location, 'app':inApp, 'time':timest});
+  var reslt = db.crowdmap.insert({'loc':location, 'app':inApp, 'time':timest});
   console.log("RESULT: " + reslt);
 
 	// create response to return to client
@@ -63,7 +63,7 @@ function heatHandler(req, res) {
 
   console.log("Q: " + JSON.stringify(query));
 
-	db.hot.find(query, function(err, docs) {
+	db.crowdmap.find(query, function(err, docs) {
 		console.log("In DB.find() callback;Points from DB within: ");
 		if(err == null) {
 			jsonStr = 'toRun(\'{\"points\": [';
