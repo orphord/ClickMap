@@ -13,10 +13,9 @@
 
 <script type="text/javascript">
 var map;
-var clickURL = "http://localhost:1337/click";
-//var clickURL = "http://crowdmap.hp.af.cm/click";
-var heatURL = "http://localhost:1337/heat";
-//var heatURL = "http://crowdmap.hp.af.cm/heat";
+var urlStart = "http://" + window.location.host;
+var clickURL = urlStart + "/click";
+var heatURL = urlStart + "/heat";
 
 var init = function() {
   var initialLatlng = new google.maps.LatLng(40,-105);
