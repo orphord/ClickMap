@@ -5,7 +5,11 @@
   "private": "true",
   "dependencies": {
     "express": "3.x",
-    "mongojs": "*",
-    "googlemaps": "*"
+    "passport": "0.1.x",
+		"connect-ensure-login": "0.1.x",
+		"passport-google-oauth": "0.1.x",
+		"passport-twitter": "1.0.x",
+    "mongojs": "0.7.x",
+    "googlemaps": "0.1.x"
   }
 }
