@@ -13,7 +13,7 @@ module.exports = function(app) {
 		console.log('heat request URL: ' + req.url);
 		heatHandler(req, res);
   });
-}
+};
 
 // Function to handle clicks (used by get '/click' route
 function clickHandler(req, res) {
@@ -34,10 +34,7 @@ function clickHandler(req, res) {
 
 	// create response to return to client
   res.writeHead(200, {'Content-Type': 'text/javascript'});
-  res.end('toRun(\'{\"loc\": [' 
-					+ location 
-					+ '], \"time\":' 
-					+ timest + '}\')');
+  res.end('toRun(\'{\"loc\": ['	+ location + '], \"time\":' + timest + '}\')');
 
 }
 
@@ -65,11 +62,11 @@ function heatHandler(req, res) {
 
 	db.crowdmap.find(query, function(err, docs) {
 		console.log("In DB.find() callback;Points from DB within: ");
-		if(err == null) {
+		if(err === null) {
 			jsonStr = 'toRun(\'{\"points\": [';
 			for(var i = 0; i < docs.length; i++) {
 				console.log('doc[' + i + "]: " + docs[i].toString());
-				if(i != 0) { jsonStr = jsonStr + ','; }
+				if(i !== 0) { jsonStr = jsonStr + ','; }
 				jsonStr = jsonStr + '[' + docs[i].loc + ']';
 			}
 			jsonStr = jsonStr + ']}\')';
