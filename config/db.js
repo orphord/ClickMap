@@ -3,7 +3,7 @@
 var generate_mongo_url = function(obj){
     var outStr = 'mongodb://orphord:happydays@paulo.mongohq.com:10018/CrowdMap_orphord';
     return outStr;
-}
+};
 
 // Create vars for mongodb database and collections
 var db = null;
@@ -14,4 +14,4 @@ var dbUrl = generate_mongo_url();
 module.exports = function() {
 	var db = require("mongojs").connect(dbUrl, collection);
 	return db;
-}
+};
