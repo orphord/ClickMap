@@ -2,13 +2,13 @@
 // A library of functions to encapsulate application security
 //#######################
 
-var passport = require('passport')
-, orfFun = require('../../OrfLib/commonFunctions')
-, TwitterStrategy = require('passport-twitter').Strategy
-, GoogleStrategy = require('passport-google-oauth').OAuth2Strategy
-, ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn
-, express = require('express')
-, path = require('path');
+var passport = require('passport'),
+orfFun = require('../../OrfLib/commonFunctions'),
+TwitterStrategy = require('passport-twitter').Strategy,
+GoogleStrategy = require('passport-google-oauth').OAuth2Strategy,
+ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn,
+express = require('express'),
+path = require('path');
 
 // When a user logs in the user record is saved in the session; if user record
 // is stored in the DB maybe only the userID needs to be serialized
@@ -37,7 +37,8 @@ module.exports = function(app) {
 					function(req, res) {
 						console.log('This should never be called because Google is authenticating');
 					}
-	);
+				 );
+
 	app.get('/auth/google/return',
 					passport.authenticate('google', { failureRedirect: '/login' }),
 					function(req, res) {
@@ -57,7 +58,7 @@ module.exports = function(app) {
 						res.redirect('/');
 					}
 				 );
-}
+};
 
 var GOOGLE_CLIENT_ID = '924997112203-6c86b3j4s0rvbusa70mdfe13hnnlul3e.apps.googleusercontent.com';
 var GOOGLE_CLIENT_SECRET = 'm0_oHHXpvN-39oiWjZHc8NxY';
@@ -83,7 +84,7 @@ passport.use(new TwitterStrategy({
 
 },
 	function(token, tokenSecret, profile, done) {
-		console.log("Twitter strategy callback...")
+		console.log("Twitter strategy callback...");
 		// probably want to store twitter profile w/ user in db
 		var user = profile;
 		return done(null, user);
