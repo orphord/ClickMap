@@ -3,7 +3,7 @@
 //#######################
 
 var passport = require('passport'),
-orfFun = require('../../OrfLib/commonFunctions'),
+
 TwitterStrategy = require('passport-twitter').Strategy,
 GoogleStrategy = require('passport-google-oauth').OAuth2Strategy,
 ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn,
@@ -31,21 +31,21 @@ module.exports = function(app) {
 	});
 
 	// Google login routes
-	app.get('/auth/google',
-					passport.authenticate('google',
-																{scope: ['https://www.googleapis.com/auth/userinfo.profile'] }),
-					function(req, res) {
-						console.log('This should never be called because Google is authenticating');
-					}
-				 );
-
-	app.get('/auth/google/return',
-					passport.authenticate('google', { failureRedirect: '/login' }),
-					function(req, res) {
-						console.log('In the google success redirection');
-						res.redirect('/');
-					}
-				 );
+//	app.get('/auth/google',
+//					passport.authenticate('google',
+//					{scope: ['https://www.googleapis.com/auth/userinfo.profile'] }),
+//					function(req, res) {
+//						console.log('This should never be called because Google is authenticating');
+//					}
+//				 );
+//
+//	app.get('/auth/google/return',
+//					passport.authenticate('google', { failureRedirect: '/login' }),
+//					function(req, res) {
+//						console.log('In the google success redirection');
+//						res.redirect('/');
+//					}
+//				 );
 
 	// Twitter login routes
 	app.get('/auth/twitter', passport.authenticate('twitter'));

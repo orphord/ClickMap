@@ -3,13 +3,16 @@
   "description": "Clickable map to test crowd server",
   "version": "0.0.1",
   "private": "true",
+	"scripts": {
+		"clickmap": "node server"
+	},
   "dependencies": {
     "express": "3.x",
     "passport": "0.1.x",
 		"connect-ensure-login": "0.1.x",
 		"passport-google-oauth": "0.1.x",
 		"passport-twitter": "1.0.x",
-    "mongojs": "0.7.x",
+    "mongojs": "2.4.x",
     "googlemaps": "0.1.x"
   }
 }

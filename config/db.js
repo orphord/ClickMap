@@ -1,7 +1,7 @@
 // Function to generate the URL to connect to the MongoDB -- takes into account
 //  running locally vs. running on appfog
 var generate_mongo_url = function(obj){
-    var outStr = 'mongodb://orphord:happydays@paulo.mongohq.com:10018/CrowdMap_orphord';
+    var outStr = 'mongodb://localhost:27017/ClickMap';
     return outStr;
 };
 
@@ -12,6 +12,7 @@ var dbUrl = generate_mongo_url();
 
 // Function(s) exposed to outside
 module.exports = function() {
-	var db = require("mongojs").connect(dbUrl, collection);
+	console.log('DB exported function URL: ' + dbUrl);
+	var db = require("mongojs")(dbUrl, collection);
 	return db;
 };

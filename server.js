@@ -10,13 +10,11 @@ var express = require('express')
 var app = express();
 
 // Initialize middleware
-app.configure(function() {
-	app.use(middlewares.cookieParser);
-	app.use(middlewares.session);
-	app.use(middlewares.initPassport);
-	app.use(middlewares.passportSession);
-	app.use(app.router);
-});
+app.use(middlewares.cookieParser);
+app.use(middlewares.session);
+app.use(middlewares.initPassport);
+app.use(middlewares.passportSession);
+app.use(app.router);
 
 // Define routes including a secured route to everything
 app.all('/',
