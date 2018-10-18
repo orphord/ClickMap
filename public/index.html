@@ -4,137 +4,140 @@
 <head>
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
 <style type="text/css">
-  html { height: 100% }
-  body { height: 100%; margin: 0; padding: 0 }
-  #map_canvas { height: 100% }
+html {
+	height: 100%
+}
+
+body {
+	height: 100%;
+	margin: 0;
+	padding: 0
+}
+
+#map_canvas {
+	height: 100%
+}
 </style>
-<script src="http://code.jquery.com/jquery-1.5.js"></script>
-<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=visualization"></script>
+<!-- <script src="http://code.jquery.com/jquery-1.5.js"></script> -->
 
+<script src="http://maps.googleapis.com/maps/api/js?v=weekly&key=AIzaSyBdIFrdb0dg0F0bc4NYdpycwJq88Qewvv8&sensor=false&libraries=visualization" type="text/javascript"></script>
+<script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
 <script type="text/javascript">
-var map;
-var urlStart = "http://" + window.location.host;
-var clickURL = urlStart + "/click";
-var heatURL = urlStart + "/heat";
+	var map;
+	var urlStart = "http://" + window.location.host;
+	var clickURL = urlStart + "/click";
+	var heatURL = urlStart + "/heat";
 
-var init = function() {
-  var initialLatlng = new google.maps.LatLng(40,-105);
-  var googleMapOptions = {
-    zoom: 10,
-    center: initialLatlng,
-    mapTypeId: google.maps.MapTypeId.TERRAIN
-  } // end myOptions
+	var init = function() {
+		var initialLatlng = new google.maps.LatLng(40, -105);
+		var googleMapOptions = {
+			zoom : 10,
+			center : initialLatlng,
+			mapTypeId : google.maps.MapTypeId.TERRAIN
+		} // end myOptions
 
-  map = new google.maps.Map(document.getElementById("map_canvas"),
-                            googleMapOptions);
-  google.maps.event.addListener(map, 'click', function(event) {
-	  alert('Click happened: ' + event.latLng.toString());
-    $.ajax(
-      {
-        url: clickURL,
-        data: {
-          "loc": event.latLng.toString(),
-          "app": "hotclicks"
-        },
-        dataType: 'jsonp',
-        jsonpCallback : 'toRun',
-        success: function(dta) {
-          placeMarker(jQuery.parseJSON(dta).loc);
-        },
-        error: function(dataObj, txtErr, err) {
-          alert("Error Type: " + txtErr.toString());
-          alert("Error thrown: " + err.toString());
-        }
-      }
-    );
-  }); // End click listener event
+		map = new google.maps.Map(document.getElementById("map_canvas"),
+				googleMapOptions);
+		google.maps.event.addListener(map, 'click', function(event) {
+			//alert('Click happened: ' + event.latLng.toString());
+			$.ajax({
+				url : clickURL,
+				data : {
+					"loc" : event.latLng.toString(),
+					"app" : "hotclicks"
+				},
+				dataType : 'jsonp',
+				jsonpCallback : 'toRun',
+				success : function(dta) {
+					placeMarker(jQuery.parseJSON(dta).loc);
+				},
+				error : function(dataObj, txtErr, err) {
+					alert("Error Type: " + txtErr.toString());
+					alert("Error thrown: " + err.toString());
+				}
+			});
+		}); // End click listener event
 
-  google.maps.event.addListener(map, 'rightclick', function(event) {
-    var NWcorner = new google.maps.LatLng(event.latLng.lat() + 0.15,
-                                          event.latLng.lng() + 0.15);
-    var SEcorner = new google.maps.LatLng(event.latLng.lat() - 0.15,
-                                          event.latLng.lng() - 0.15);
+		google.maps.event.addListener(map, 'rightclick', function(event) {
+			var NWcorner = new google.maps.LatLng(event.latLng.lat() + 0.15,
+					event.latLng.lng() + 0.15);
+			var SEcorner = new google.maps.LatLng(event.latLng.lat() - 0.15,
+					event.latLng.lng() - 0.15);
 
-    $.ajax(
-      {
-        url: heatURL,
-        data: {
-          "NW": NWcorner.toString(),
-          "SE": SEcorner.toString(),
-          "app": "hotclicks"
-        },
-        dataType: 'jsonp',
-        jsonpCallback: 'toRun',
-        success: function(dta) {
-                  // Currently receiving NE and SW back, need to get a heatmap
-                  // object back
-                  points = jQuery.parseJSON(dta).points;
-                  createHeatMap(points);
-                  //var nwLoc = jQuery.parseJSON(dta).NW;
-                  // var seLoc = jQuery.parseJSON(dta).SE;
+			$.ajax({
+				url : heatURL,
+				data : {
+					"NW" : NWcorner.toString(),
+					"SE" : SEcorner.toString(),
+					"app" : "hotclicks"
+				},
+				dataType : 'jsonp',
+				jsonpCallback : 'toRun',
+				success : function(dta) {
+					// Currently receiving NE and SW back, need to get a heatmap
+					// object back
+					points = jQuery.parseJSON(dta).points;
+					createHeatMap(points);
+					//var nwLoc = jQuery.parseJSON(dta).NW;
+					// var seLoc = jQuery.parseJSON(dta).SE;
 
-                  //placeMarker(nwLoc);
-                  //placeMarker(seLoc);
-                 },
-        error: function(dataObj, txtErr, err) {
-                 alert("Error Type: " + txtErr.toString());
-                 alert("Error thrown: " + err.toString());
-               }
-      }
-    );
-  }); // End dblclick listener event
-} // End init function
+					//placeMarker(nwLoc);
+					//placeMarker(seLoc);
+				},
+				error : function(dataObj, txtErr, err) {
+					alert("Error Type: " + txtErr.toString());
+					alert("Error thrown: " + err.toString());
+				}
+			});
+		}); // End dblclick listener event
+	} // End init function
 
-function placeMarker(location) {
-  var ltLng = parseLatLngStr(location);
-  var marker = new google.maps.Marker(
-  {
-    position: ltLng,
-    map: map
-  }); // end google.maps.Marker
+	function placeMarker(location) {
+		var ltLng = parseLatLngStr(location);
+		var marker = new google.maps.Marker({
+			position : ltLng,
+			map : map
+		}); // end google.maps.Marker
 
-  var infoWin = new google.maps.InfoWindow({ 
-    content: ltLng.toString()
-  }); // end InfoWindow
+		var infoWin = new google.maps.InfoWindow({
+			content : ltLng.toString()
+		}); // end InfoWindow
 
-  infoWin.open(map, marker);
-}
+		infoWin.open(map, marker);
+	}
 
-function parseLatLngStr(coords) {
-  var latiLongi = new google.maps.LatLng(coords[0],coords[1]);
+	function parseLatLngStr(coords) {
+		var latiLongi = new google.maps.LatLng(coords[0], coords[1]);
 
-  return latiLongi;
-} // end parseLatLngStr
+		return latiLongi;
+	} // end parseLatLngStr
 
-function createHeatMap(_pts) {
-  // 1. create LatLng objects from points returned from server
-  var ltLngs = [];
-  for(var i = 0; i < _pts.length; i++) {
-    ltLngs[i] = new google.maps.LatLng(_pts[i][0], _pts[i][1]);
-  }
+	function createHeatMap(_pts) {
+		// 1. create LatLng objects from points returned from server
+		var ltLngs = [];
+		for (var i = 0; i < _pts.length; i++) {
+			ltLngs[i] = new google.maps.LatLng(_pts[i][0], _pts[i][1]);
+		}
 
-  // 2. Create MVCArray from LatLng array
-  var mvcArray = new google.maps.MVCArray(ltLngs);
+		// 2. Create MVCArray from LatLng array
+		var mvcArray = new google.maps.MVCArray(ltLngs);
 
-  // 3. Create HeatMap object
-  var heatmap = new google.maps.visualization.HeatmapLayer({
-    data: mvcArray
-  });
+		// 3. Create HeatMap object
+		var heatmap = new google.maps.visualization.HeatmapLayer({
+			data : mvcArray
+		});
 
-  // 4. set heatmap object's map
-  heatmap.setMap(map);
+		// 4. set heatmap object's map
+		heatmap.setMap(map);
 
+	}
 
-}
-
-
-$(document).ready(init);
-
+	$(document).ready(init);
 </script>
 </head>
 
 <body>
-  <div id="map_canvas" style="width:100%; height:95%"></div>
+	<div id="map_canvas" style="width: 100%; height: 95%"></div>
 
 </body>
 
