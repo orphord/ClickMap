@@ -20,7 +20,7 @@ body {
 </style>
 <!-- <script src="http://code.jquery.com/jquery-1.5.js"></script> -->
 
-<script src="http://maps.googleapis.com/maps/api/js?v=weekly&key=AIzaSyBdIFrdb0dg0F0bc4NYdpycwJq88Qewvv8&sensor=false&libraries=visualization" type="text/javascript"></script>
+<script src="http://maps.googleapis.com/maps/api/js?v=weekly&key=AIzaSyBdIFrdb0dg0F0bc4NYdpycwJq88Qewvv8&libraries=visualization" type="text/javascript"></script>
 <script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
 <script type="text/javascript">
 	var map;
@@ -39,7 +39,7 @@ body {
 		map = new google.maps.Map(document.getElementById("map_canvas"),
 				googleMapOptions);
 		google.maps.event.addListener(map, 'click', function(event) {
-			//alert('Click happened: ' + event.latLng.toString());
+			console.log('Click happened: ' + event.latLng.toString());
 			$.ajax({
 				url : clickURL,
 				data : {
@@ -49,6 +49,7 @@ body {
 				dataType : 'jsonp',
 				jsonpCallback : 'toRun',
 				success : function(dta) {
+					console.log('JSON returned: ' + dta);
 					placeMarker(jQuery.parseJSON(dta).loc);
 				},
 				error : function(dataObj, txtErr, err) {
@@ -59,6 +60,7 @@ body {
 		}); // End click listener event
 
 		google.maps.event.addListener(map, 'rightclick', function(event) {
+			console.log('RightClick event.');
 			var NWcorner = new google.maps.LatLng(event.latLng.lat() + 0.15,
 					event.latLng.lng() + 0.15);
 			var SEcorner = new google.maps.LatLng(event.latLng.lat() - 0.15,
@@ -89,7 +91,7 @@ body {
 					alert("Error thrown: " + err.toString());
 				}
 			});
-		}); // End dblclick listener event
+		}); // End rightclick listener event
 	} // End init function
 
 	function placeMarker(location) {
