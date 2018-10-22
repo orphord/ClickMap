@@ -58,17 +58,8 @@ function heatHandler(req, res) {
 
   console.log("Q: " + JSON.stringify(query));
   db.getHeat(query).then(function(points){
-		jsonStr = 'toRun(\'{\"points\": [';
-		points.forEach(function(currPoint, index, points) {
-
-			console.log('point[' + index + "]: " + points[index].toString());
-			if(index !== 0) { jsonStr = jsonStr + ','; }
-			jsonStr = jsonStr + '[' + points[index].loc + ']';
-		});
-
-		// Close JSON string
-		jsonStr = jsonStr + ']}\')';
-
+  	var locs = points.map(pt => pt.loc);
+  	var jsonStr = 'toRun(\'{\"points\": ' + JSON.stringify(locs) + '}\')';
 
 		console.log("JSON STR: " + jsonStr);
 		res.writeHead(200, {'Content-Type': 'text/javascript'});
