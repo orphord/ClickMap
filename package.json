@@ -1,17 +1,18 @@
 {
-  "name": "CrowdMap",
-  "description": "Clickable map to test crowd server",
-  "version": "0.0.1",
-  "private": "true",
-  "scripts": {
-    "clickmap": "node server"
-  },
-  "dependencies": {
-    "express": "4.x",
-    "cookie-parser": "1.x",
-    "express-session": "1.x",
-    "connect-ensure-login": "0.1.x",
-    "mongojs": "2.6.x",
-    "googlemaps": "0.1.x"
-  }
+	"name": "CrowdMap",
+	"description": "Clickable map to test crowd server",
+	"version": "0.0.1",
+	"private": "true",
+	"scripts": {
+		"clickmap": "node server"
+	},
+	"dependencies": {
+		"express": "4.x",
+		"cookie-parser": "1.x",
+		"express-session": "1.x",
+		"connect-ensure-login": "0.1.x",
+		"mongodb": "3.x",
+		"promise": "8.x",
+		"googlemaps": "0.1.x"
+	}
 }

@@ -1,6 +1,5 @@
 var url = require('url');
-var dbCreate = require('./db');
-var db = dbCreate();
+var db = require('./db');
 var gm = require('googlemaps');
 
 // Function(s) exposed to outside
@@ -29,8 +28,7 @@ function clickHandler(req, res) {
   var timest = new Date().getTime();
 
 	// insert data to mongodb
-  var reslt = db.crowdmap.insert({'loc':location, 'app':inApp, 'time':timest});
-  console.log("RESULT: " + reslt);
+  db.addClick(location, inApp, timest);
 
 	// create response to return to client
   res.writeHead(200, {'Content-Type': 'text/javascript'});
@@ -59,28 +57,24 @@ function heatHandler(req, res) {
   var query = {"loc": {$geoWithin: {$box: [NWloc, SEloc]}}};
 
   console.log("Q: " + JSON.stringify(query));
+  db.getHeat(query).then(function(points){
+		jsonStr = 'toRun(\'{\"points\": [';
+		points.forEach(function(currPoint, index, points) {
 
-	db.crowdmap.find(query, function(err, docs) {
-		console.log("In DB.find() callback;Points from DB within: ");
-		if(err === null) {
-			jsonStr = 'toRun(\'{\"points\": [';
-			for(var i = 0; i < docs.length; i++) {
-				console.log('doc[' + i + "]: " + docs[i].toString());
-				if(i !== 0) { jsonStr = jsonStr + ','; }
-				jsonStr = jsonStr + '[' + docs[i].loc + ']';
-			}
-			jsonStr = jsonStr + ']}\')';
+			console.log('point[' + index + "]: " + points[index].toString());
+			if(index !== 0) { jsonStr = jsonStr + ','; }
+			jsonStr = jsonStr + '[' + points[index].loc + ']';
+		});
 
-
-			console.log("JSON STR: " + jsonStr);
-			res.writeHead(200, {'Content-Type': 'text/javascript'});
-			res.end(jsonStr);		
-		} else {
-			console.log("ERR: " + err.toString());
-		}
-	});
+		// Close JSON string
+		jsonStr = jsonStr + ']}\')';
 
 
+		console.log("JSON STR: " + jsonStr);
+		res.writeHead(200, {'Content-Type': 'text/javascript'});
+		res.end(jsonStr);
+
+  });
 
 }
 
